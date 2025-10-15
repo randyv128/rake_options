@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require "rake_commander/cli_parser"
+require "rake_options/cli_parser"
 
-RSpec.describe RakeCommander::CLIParser do
+RSpec.describe RakeOptions::CLIParser do
   describe "#parse" do
     context "with single flag" do
       let(:config) do

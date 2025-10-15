@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require "rake_commander/help_generator"
+require "rake_options/help_generator"
 
-RSpec.describe RakeCommander::HelpGenerator do
+RSpec.describe RakeOptions::HelpGenerator do
   describe "#display_and_exit" do
     let(:config) do
       {

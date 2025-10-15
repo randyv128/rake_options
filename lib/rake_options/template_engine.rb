@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module RakeCommander
+module RakeOptions
   class TemplateEngine
     # Parse a template string into components
     # @param template [String] Template like "--flag $variable"

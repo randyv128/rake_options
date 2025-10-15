@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require_relative "rake_commander/version"
-require_relative "rake_commander/errors"
-require_relative "rake_commander/argument_parser"
-require_relative "rake_commander/help_generator"
-require_relative "rake_commander/hash_with_indifferent_access"
+require_relative "rake_options/version"
+require_relative "rake_options/errors"
+require_relative "rake_options/argument_parser"
+require_relative "rake_options/help_generator"
+require_relative "rake_options/hash_with_indifferent_access"
 
-module RakeCommander
+module RakeOptions
   class << self
     attr_accessor :readme_content
 

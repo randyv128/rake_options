@@ -2,7 +2,7 @@
 
 require_relative "template_engine"
 
-module RakeCommander
+module RakeOptions
   class CLIParser
     def initialize(config)
       @config = config

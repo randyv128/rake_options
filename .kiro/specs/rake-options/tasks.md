@@ -2,19 +2,19 @@
 
 - [x] 1. Set up gem structure and dependencies
   - Create standard Ruby gem directory structure (lib, spec, bin)
-  - Create rake_commander.gemspec with metadata and dependencies
+  - Create rake_options.gemspec with metadata and dependencies
   - Set up Rakefile for gem tasks
-  - Create lib/rake_commander.rb as main entry point
+  - Create lib/rake_options.rb as main entry point
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
 
 - [x] 2. Implement custom error classes
-  - Create lib/rake_commander/errors.rb
+  - Create lib/rake_options/errors.rb
   - Define base Error class inheriting from StandardError
   - Define InvalidNotationError, TemplateParseError, and ArgumentParseError
   - _Requirements: 2.4, 4.5_
 
 - [ ] 3. Implement TemplateEngine for pattern matching
-  - [x] 3.1 Create lib/rake_commander/template_engine.rb
+  - [x] 3.1 Create lib/rake_options/template_engine.rb
     - Implement parse_template method to extract flag and variables from template strings
     - Implement identify_variables method to find $variable placeholders
     - Implement build_pattern method to create regex from template
@@ -28,7 +28,7 @@
     - _Requirements: 4.1, 4.2, 4.3_
 
 - [ ] 4. Implement CLIParser for CLI-style argument parsing
-  - [x] 4.1 Create lib/rake_commander/cli_parser.rb
+  - [x] 4.1 Create lib/rake_options/cli_parser.rb
     - Implement initialize method accepting config hash
     - Implement parse method to process ARGV
     - Implement extract_flag_and_template to parse config values
@@ -46,7 +46,7 @@
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
 - [ ] 5. Implement BracketParser for bracket-style argument parsing
-  - [x] 5.1 Create lib/rake_commander/bracket_parser.rb
+  - [x] 5.1 Create lib/rake_options/bracket_parser.rb
     - Implement initialize method accepting config hash
     - Implement parse method to process ARGV
     - Implement extract_bracket_args to find [key=value] patterns
@@ -63,7 +63,7 @@
     - _Requirements: 2.2, 2.5_
 
 - [ ] 6. Implement HelpGenerator for documentation
-  - [x] 6.1 Create lib/rake_commander/help_generator.rb
+  - [x] 6.1 Create lib/rake_options/help_generator.rb
     - Implement initialize accepting config and optional readme_content
     - Implement display_and_exit method
     - Implement generate_help_text to create formatted help from config
@@ -80,7 +80,7 @@
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
 - [ ] 7. Implement ArgumentParser orchestrator
-  - [x] 7.1 Create lib/rake_commander/argument_parser.rb
+  - [x] 7.1 Create lib/rake_options/argument_parser.rb
     - Implement initialize accepting config and notation
     - Implement validate_notation to check for valid notation symbols
     - Implement select_parser to return CLIParser or BracketParser instance
@@ -95,14 +95,14 @@
     - _Requirements: 2.1, 2.2, 2.3, 2.4_
 
 - [x] 8. Implement HashWithIndifferentAccess utility
-  - Create lib/rake_commander/hash_with_indifferent_access.rb
+  - Create lib/rake_options/hash_with_indifferent_access.rb
   - Implement class that allows both string and symbol key access
   - Override [] method to handle both string and symbol keys
   - Override []= method to store with string keys
   - _Requirements: 5.4_
 
-- [ ] 9. Implement main RakeCommander module API
-  - [x] 9.1 Update lib/rake_commander.rb with public API
+- [ ] 9. Implement main RakeOptions module API
+  - [x] 9.1 Update lib/rake_options.rb with public API
     - Require all component files
     - Implement command_line_args class method
     - Detect --help flag in ARGV and trigger HelpGenerator if present
@@ -112,7 +112,7 @@
     - Store readme content in class variable for help generation
     - _Requirements: 1.1, 2.1, 2.3, 3.1, 5.1, 5.2, 5.3, 5.4_
   
-  - [x] 9.2 Write unit tests for RakeCommander module
+  - [x] 9.2 Write unit tests for RakeOptions module
     - Test command_line_args with CLI notation
     - Test command_line_args with bracket notation
     - Test --help flag triggers help display
@@ -143,6 +143,6 @@
   - Verify gemspec has all required metadata (version, authors, description, homepage)
   - Add LICENSE file (MIT)
   - Ensure all files are included in gemspec files list
-  - Test gem build with `gem build rake_commander.gemspec`
+  - Test gem build with `gem build rake_options.gemspec`
   - Test gem installation locally
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_

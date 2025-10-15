@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "rake_commander"
+require "rake_options"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

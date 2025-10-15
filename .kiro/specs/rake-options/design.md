@@ -1,8 +1,8 @@
-# RakeCommander Design Document
+# RakeOptions Design Document
 
 ## Overview
 
-RakeCommander is a Ruby gem that provides a simple, declarative API for parsing command line arguments in rake tasks. The gem uses a template-based configuration system to map command line inputs to structured data, supports multiple notation styles, and automatically generates help documentation.
+RakeOptions is a Ruby gem that provides a simple, declarative API for parsing command line arguments in rake tasks. The gem uses a template-based configuration system to map command line inputs to structured data, supports multiple notation styles, and automatically generates help documentation.
 
 The design emphasizes simplicity and ease of use, requiring minimal integration code while providing powerful argument parsing capabilities.
 
@@ -13,13 +13,13 @@ The design emphasizes simplicity and ease of use, requiring minimal integration 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                     Rake Task                           │
-│  options = RakeCommander.command_line_args(config)      │
-│  RakeCommander.initialize_readme(readme)                │
+│  options = RakeOptions.command_line_args(config)      │
+│  RakeOptions.initialize_readme(readme)                │
 └────────────────────┬────────────────────────────────────┘
                      │
                      ▼
 ┌─────────────────────────────────────────────────────────┐
-│                  RakeCommander                          │
+│                  RakeOptions                          │
 │                  (Main Module)                          │
 └────────┬────────────────────────┬───────────────────────┘
          │                        │
@@ -43,8 +43,8 @@ The design emphasizes simplicity and ease of use, requiring minimal integration 
 ### Module Structure
 
 ```
-RakeCommander/
-├── rake_commander.rb          # Main module with public API
+RakeOptions/
+├── rake_options.rb          # Main module with public API
 ├── argument_parser.rb         # Orchestrates parsing logic
 ├── cli_parser.rb              # CLI notation parser
 ├── bracket_parser.rb          # Bracket notation parser
@@ -55,12 +55,12 @@ RakeCommander/
 
 ## Components and Interfaces
 
-### 1. RakeCommander Module (Main API)
+### 1. RakeOptions Module (Main API)
 
 The main entry point providing the public API.
 
 ```ruby
-module RakeCommander
+module RakeOptions
   class << self
     # Parse command line arguments based on configuration
     # @param config [Hash] Argument configuration mapping
@@ -89,7 +89,7 @@ end
 Orchestrates the parsing process and coordinates between components.
 
 ```ruby
-class RakeCommander::ArgumentParser
+class RakeOptions::ArgumentParser
   # @param config [Hash] Argument configuration
   # @param notation [Symbol] Notation style
   def initialize(config, notation)
@@ -123,7 +123,7 @@ end
 Parses CLI-style arguments (--flag value).
 
 ```ruby
-class RakeCommander::CLIParser
+class RakeOptions::CLIParser
   # @param config [Hash] Argument configuration
   def initialize(config)
   end
@@ -156,7 +156,7 @@ end
 Parses bracket-style arguments [key=value].
 
 ```ruby
-class RakeCommander::BracketParser
+class RakeOptions::BracketParser
   # @param config [Hash] Argument configuration
   def initialize(config)
   end
@@ -189,7 +189,7 @@ end
 Handles template pattern matching and value extraction.
 
 ```ruby
-class RakeCommander::TemplateEngine
+class RakeOptions::TemplateEngine
   # Parse a template string into components
   # @param template [String] Template like "--flag $variable"
   # @return [Hash] Template structure
@@ -226,7 +226,7 @@ end
 Generates and displays help documentation.
 
 ```ruby
-class RakeCommander::HelpGenerator
+class RakeOptions::HelpGenerator
   # @param config [Hash] Argument configuration
   # @param readme_content [String, nil] Custom help content
   def initialize(config, readme_content = nil)
@@ -258,7 +258,7 @@ end
 ### 7. Custom Errors
 
 ```ruby
-module RakeCommander
+module RakeOptions
   class Error < StandardError; end
   class InvalidNotationError < Error; end
   class TemplateParseError < Error; end

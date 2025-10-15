@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "RakeCommander Integration Tests" do
+RSpec.describe "RakeOptions Integration Tests" do
   describe "Full CLI parsing workflow" do
     let(:config) do
       {
@@ -15,7 +15,7 @@ RSpec.describe "RakeCommander Integration Tests" do
     it "parses multiple CLI arguments in one invocation" do
       stub_const("ARGV", ["--with-mysql-lib", "/usr/local/lib", "--enable-feature", "caching", "--port", "3000"])
       
-      result = RakeCommander.command_line_args(config, notation: :cli)
+      result = RakeOptions.command_line_args(config, notation: :cli)
       
       expect(result["with-mysql-lib"]).to eq("/usr/local/lib")
       expect(result["enable-feature"]).to eq("caching")
@@ -25,7 +25,7 @@ RSpec.describe "RakeCommander Integration Tests" do
     it "handles partial arguments gracefully" do
       stub_const("ARGV", ["--with-mysql-lib", "/usr/local/lib"])
       
-      result = RakeCommander.command_line_args(config, notation: :cli)
+      result = RakeOptions.command_line_args(config, notation: :cli)
       
       expect(result["with-mysql-lib"]).to eq("/usr/local/lib")
       expect(result["enable-feature"]).to be_nil
@@ -35,7 +35,7 @@ RSpec.describe "RakeCommander Integration Tests" do
     it "supports quoted values with spaces" do
       stub_const("ARGV", ["--with-mysql-lib", '"/path/with spaces/lib"'])
       
-      result = RakeCommander.command_line_args(config, notation: :cli)
+      result = RakeOptions.command_line_args(config, notation: :cli)
       
       expect(result["with-mysql-lib"]).to eq("/path/with spaces/lib")
     end
@@ -43,7 +43,7 @@ RSpec.describe "RakeCommander Integration Tests" do
     it "allows symbol key access" do
       stub_const("ARGV", ["--with-mysql-lib", "/usr/local/lib"])
       
-      result = RakeCommander.command_line_args(config, notation: :cli)
+      result = RakeOptions.command_line_args(config, notation: :cli)
       
       expect(result[:with_mysql_lib]).to eq("/usr/local/lib")
       expect(result["with-mysql-lib"]).to eq("/usr/local/lib")
@@ -62,7 +62,7 @@ RSpec.describe "RakeCommander Integration Tests" do
     it "parses multiple bracket arguments" do
       stub_const("ARGV", ["[environment=production]", "[region=us-west-2]", "[instance-type=t2.micro]"])
       
-      result = RakeCommander.command_line_args(config, notation: :bracket)
+      result = RakeOptions.command_line_args(config, notation: :bracket)
       
       expect(result["environment"]).to eq("production")
       expect(result["region"]).to eq("us-west-2")
@@ -72,7 +72,7 @@ RSpec.describe "RakeCommander Integration Tests" do
     it "handles quoted bracket values" do
       stub_const("ARGV", ['[environment="staging environment"]'])
       
-      result = RakeCommander.command_line_args(config, notation: :bracket)
+      result = RakeOptions.command_line_args(config, notation: :bracket)
       
       expect(result["environment"]).to eq("staging environment")
     end
@@ -80,7 +80,7 @@ RSpec.describe "RakeCommander Integration Tests" do
     it "supports symbol key access with dashes/underscores" do
       stub_const("ARGV", ["[instance-type=t2.micro]"])
       
-      result = RakeCommander.command_line_args(config, notation: :bracket)
+      result = RakeOptions.command_line_args(config, notation: :bracket)
       
       expect(result[:instance_type]).to eq("t2.micro")
       expect(result["instance-type"]).to eq("t2.micro")
@@ -97,13 +97,13 @@ RSpec.describe "RakeCommander Integration Tests" do
 
     context "with custom README" do
       before do
-        RakeCommander.initialize_readme("Custom Help Documentation\n\nUsage: rake task [options]")
+        RakeOptions.initialize_readme("Custom Help Documentation\n\nUsage: rake task [options]")
       end
 
       it "displays custom README and exits" do
         stub_const("ARGV", ["--help"])
         
-        expect { RakeCommander.command_line_args(config) }
+        expect { RakeOptions.command_line_args(config) }
           .to output(/Custom Help Documentation/).to_stdout
           .and raise_error(SystemExit) { |error| expect(error.status).to eq(0) }
       end
@@ -111,13 +111,13 @@ RSpec.describe "RakeCommander Integration Tests" do
 
     context "with auto-generated help" do
       before do
-        RakeCommander.readme_content = nil
+        RakeOptions.readme_content = nil
       end
 
       it "displays auto-generated help and exits" do
         stub_const("ARGV", ["--help"])
         
-        expect { RakeCommander.command_line_args(config) }
+        expect { RakeOptions.command_line_args(config) }
           .to output(/Available Options/).to_stdout
           .and raise_error(SystemExit) { |error| expect(error.status).to eq(0) }
       end
@@ -125,7 +125,7 @@ RSpec.describe "RakeCommander Integration Tests" do
       it "includes all configured options in help" do
         stub_const("ARGV", ["--help"])
         
-        expect { RakeCommander.command_line_args(config) }
+        expect { RakeOptions.command_line_args(config) }
           .to output(/--option1/).to_stdout
           .and raise_error(SystemExit)
       end
@@ -143,7 +143,7 @@ RSpec.describe "RakeCommander Integration Tests" do
     it "handles templates with multiple variables" do
       stub_const("ARGV", ["--config", "database.yml", "--env", "production", "--verbose", "debug"])
       
-      result = RakeCommander.command_line_args(config, notation: :cli)
+      result = RakeOptions.command_line_args(config, notation: :cli)
       
       expect(result["database"]).to be_a(Hash)
       expect(result["database"]["file"]).to eq("database.yml")
@@ -154,7 +154,7 @@ RSpec.describe "RakeCommander Integration Tests" do
     it "handles empty ARGV" do
       stub_const("ARGV", [])
       
-      result = RakeCommander.command_line_args(config, notation: :cli)
+      result = RakeOptions.command_line_args(config, notation: :cli)
       
       expect(result["database"]).to be_nil
       expect(result["verbose"]).to be_nil
@@ -163,7 +163,7 @@ RSpec.describe "RakeCommander Integration Tests" do
     it "ignores unrecognized arguments" do
       stub_const("ARGV", ["--unknown-flag", "value", "--verbose", "info"])
       
-      result = RakeCommander.command_line_args(config, notation: :cli)
+      result = RakeOptions.command_line_args(config, notation: :cli)
       
       expect(result["verbose"]).to eq("info")
       expect(result["database"]).to be_nil
@@ -180,15 +180,15 @@ RSpec.describe "RakeCommander Integration Tests" do
     it "raises InvalidNotationError for unsupported notation" do
       stub_const("ARGV", ["--option", "value"])
       
-      expect { RakeCommander.command_line_args(config, notation: :invalid) }
-        .to raise_error(RakeCommander::InvalidNotationError, /Invalid notation/)
+      expect { RakeOptions.command_line_args(config, notation: :invalid) }
+        .to raise_error(RakeOptions::InvalidNotationError, /Invalid notation/)
     end
 
     it "provides clear error message with supported notations" do
       stub_const("ARGV", ["--option", "value"])
       
-      expect { RakeCommander.command_line_args(config, notation: :xml) }
-        .to raise_error(RakeCommander::InvalidNotationError, /:cli, :bracket/)
+      expect { RakeOptions.command_line_args(config, notation: :xml) }
+        .to raise_error(RakeOptions::InvalidNotationError, /:cli, :bracket/)
     end
   end
 
@@ -206,7 +206,7 @@ RSpec.describe "RakeCommander Integration Tests" do
       it "handles typical deployment command" do
         stub_const("ARGV", ["--env", "production", "--region", "us-east-1", "--version", "v1.2.3"])
         
-        result = RakeCommander.command_line_args(deploy_config)
+        result = RakeOptions.command_line_args(deploy_config)
         
         expect(result[:environment]).to eq("production")
         expect(result[:region]).to eq("us-east-1")
@@ -231,7 +231,7 @@ RSpec.describe "RakeCommander Integration Tests" do
           "--prefix", "/opt/myapp"
         ])
         
-        result = RakeCommander.command_line_args(build_config)
+        result = RakeOptions.command_line_args(build_config)
         
         expect(result["with-mysql"]).to eq("/usr/local/mysql/lib")
         expect(result["with-ssl"]).to eq("/usr/local/ssl/lib")

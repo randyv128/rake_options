@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require "rake_commander/template_engine"
+require "rake_options/template_engine"
 
-RSpec.describe RakeCommander::TemplateEngine do
+RSpec.describe RakeOptions::TemplateEngine do
   describe ".parse_template" do
     context "with single variable" do
       it "parses template with one variable" do

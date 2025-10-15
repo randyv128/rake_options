@@ -1,13 +1,13 @@
-# RakeCommander
+# RakeOptions
 
-RakeCommander is a Ruby gem that simplifies command line argument handling for rake tasks. It provides an intuitive API for parsing arguments with support for multiple notation styles and automatic help documentation generation.
+RakeOptions is a Ruby gem that simplifies command line argument handling for rake tasks. It provides an intuitive API for parsing arguments with support for multiple notation styles and automatic help documentation generation.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'rake_commander'
+gem 'rake_options'
 ```
 
 And then execute:
@@ -19,7 +19,7 @@ bundle install
 Or install it yourself as:
 
 ```bash
-gem install rake_commander
+gem install rake_options
 ```
 
 ## Usage
@@ -27,7 +27,7 @@ gem install rake_commander
 ### Basic CLI-Style Arguments
 
 ```ruby
-require 'rake_commander'
+require 'rake_options'
 
 desc "Build with custom options"
 task :build do
@@ -36,7 +36,7 @@ task :build do
     "enable-feature" => "--enable-feature $name"
   }
   
-  options = RakeCommander.command_line_args(config)
+  options = RakeOptions.command_line_args(config)
   
   puts "MySQL lib path: #{options['with-mysql-lib']}"
   puts "Feature: #{options['enable-feature']}"
@@ -51,7 +51,7 @@ rake build -- --with-mysql-lib "/usr/local/mysql/lib" --enable-feature "caching"
 ### Bracket-Style Arguments
 
 ```ruby
-require 'rake_commander'
+require 'rake_options'
 
 desc "Deploy with bracket notation"
 task :deploy do
@@ -60,7 +60,7 @@ task :deploy do
     "region" => "[region=$region]"
   }
   
-  options = RakeCommander.command_line_args(config, notation: :bracket)
+  options = RakeOptions.command_line_args(config, notation: :bracket)
   
   puts "Deploying to #{options['environment']} in #{options['region']}"
 end
@@ -78,14 +78,14 @@ config = {
   "database" => "--config $file --env $environment"
 }
 
-options = RakeCommander.command_line_args(config)
+options = RakeOptions.command_line_args(config)
 # Extracts both file and environment from: --config database.yml --env production
 ```
 
 ### Automatic Help Documentation
 
 ```ruby
-require 'rake_commander'
+require 'rake_options'
 
 readme_content = <<~HELP
   Build Task Help
@@ -95,7 +95,7 @@ readme_content = <<~HELP
     --enable-feature NAME    Enable a specific feature
 HELP
 
-RakeCommander.initialize_readme(readme_content)
+RakeOptions.initialize_readme(readme_content)
 
 desc "Build with help support"
 task :build do
@@ -104,7 +104,7 @@ task :build do
     "enable-feature" => "--enable-feature $name"
   }
   
-  options = RakeCommander.command_line_args(config)
+  options = RakeOptions.command_line_args(config)
   # Your build logic here
 end
 ```
@@ -119,7 +119,7 @@ rake build -- --help
 The returned options hash supports both string and symbol key access:
 
 ```ruby
-options = RakeCommander.command_line_args(config)
+options = RakeOptions.command_line_args(config)
 
 # Both work:
 options['with-mysql-lib']
@@ -158,7 +158,7 @@ The configuration hash maps symbolic names to template patterns:
 ### CLI Notation (default)
 
 ```ruby
-options = RakeCommander.command_line_args(config, notation: :cli)
+options = RakeOptions.command_line_args(config, notation: :cli)
 ```
 
 Supports:
@@ -169,7 +169,7 @@ Supports:
 ### Bracket Notation
 
 ```ruby
-options = RakeCommander.command_line_args(config, notation: :bracket)
+options = RakeOptions.command_line_args(config, notation: :bracket)
 ```
 
 Supports:
@@ -179,11 +179,11 @@ Supports:
 
 ## Error Handling
 
-RakeCommander provides clear error messages:
+RakeOptions provides clear error messages:
 
 ```ruby
 # Invalid notation
-RakeCommander.command_line_args(config, notation: :invalid)
+RakeOptions.command_line_args(config, notation: :invalid)
 # => InvalidNotationError: Invalid notation ':invalid'. Supported notations: :cli, :bracket
 
 # Missing optional arguments return nil
@@ -205,7 +205,7 @@ rake task -- --your-flag value
 
 **Problem**: Can't access values with symbol keys.
 
-**Solution**: RakeCommander returns a `HashWithIndifferentAccess` that supports both:
+**Solution**: RakeOptions returns a `HashWithIndifferentAccess` that supports both:
 ```ruby
 options[:key]        # Works
 options['key']       # Also works
@@ -265,7 +265,7 @@ rake spec
 Build the gem:
 
 ```bash
-gem build rake_commander.gemspec
+gem build rake_options.gemspec
 ```
 
 ## Contributing

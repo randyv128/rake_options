@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module RakeCommander
+module RakeOptions
   class HashWithIndifferentAccess < Hash
     def initialize(hash = {})
       super()

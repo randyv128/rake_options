@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe RakeCommander do
+RSpec.describe RakeOptions do
   let(:config) do
     {
       "with-mysql-lib" => "--with-mysql-lib $path",
@@ -60,7 +60,7 @@ RSpec.describe RakeCommander do
         stub_const("ARGV", ["--with-mysql-lib", "/usr/local/lib"])
         result = described_class.command_line_args(config)
         
-        expect(result).to be_a(RakeCommander::HashWithIndifferentAccess)
+        expect(result).to be_a(RakeOptions::HashWithIndifferentAccess)
       end
     end
   end

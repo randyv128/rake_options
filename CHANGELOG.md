@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2025-10-15
 
 ### Added
-- Initial release of RakeCommander
+- Initial release of RakeOptions
 - CLI-style argument parsing with `--flag value` syntax
 - Bracket-style argument parsing with `[key=value]` syntax
 - Template-based value extraction using `$variable` placeholders
@@ -33,4 +33,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ruby 2.7 or higher
 - No runtime dependencies (minimal design)
 
-[0.1.0]: https://github.com/randyv128/rake_commander/releases/tag/v0.1.0
+[0.1.0]: https://github.com/randyv128/rake_options/releases/tag/v0.1.0

@@ -4,7 +4,7 @@ require_relative "cli_parser"
 require_relative "bracket_parser"
 require_relative "errors"
 
-module RakeCommander
+module RakeOptions
   class ArgumentParser
     VALID_NOTATIONS = [:cli, :bracket].freeze
 

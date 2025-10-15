@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-require_relative "lib/rake_commander/version"
+require_relative "lib/rake_options/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "rake_commander"
-  spec.version = RakeCommander::VERSION
+  spec.name = "rake_options"
+  spec.version = RakeOptions::VERSION
   spec.authors = ["Randy Villanueva"]
   spec.email = ["randyv128@gmail.com"]
 
   spec.summary = "Simplify command line argument handling for rake tasks"
-  spec.description = "RakeCommander provides an intuitive API for parsing command line arguments in rake tasks with support for multiple notation styles and automatic help documentation generation."
-  spec.homepage = "https://github.com/randyv128/rake_commander"
+  spec.description = "RakeOptions provides an intuitive API for parsing command line arguments in rake tasks with support for multiple notation styles and automatic help documentation generation."
+  spec.homepage = "https://github.com/randyv128/rake_options"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.7.0"
 

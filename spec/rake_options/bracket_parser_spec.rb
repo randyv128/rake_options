@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require "rake_commander/bracket_parser"
+require "rake_options/bracket_parser"
 
-RSpec.describe RakeCommander::BracketParser do
+RSpec.describe RakeOptions::BracketParser do
   describe "#parse" do
     context "with simple key=value" do
       let(:config) do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module RakeCommander
+module RakeOptions
   class HelpGenerator
     def initialize(config, readme_content = nil)
       @config = config
