@@ -41,17 +41,17 @@ RSpec.describe RakeOptions::TemplateEngine do
       let(:parsed_template) { described_class.parse_template("--with-mysql-lib $path") }
 
       it "extracts value from matching input" do
-        input = ["--with-mysql-lib", "/usr/local/mysql/lib"]
+        input = ["--with-mysql-lib=/usr/local/mysql/lib"]
         result = described_class.extract_values(input, parsed_template)
         
         expect(result).to eq({ "path" => "/usr/local/mysql/lib" })
       end
 
       it "extracts quoted value with spaces" do
-        input = ["--with-mysql-lib", '"path with spaces"']
+        input = ['--with-mysql-lib="path with spaces"']
         result = described_class.extract_values(input, parsed_template)
         
-        expect(result["path"]).to include("path")
+        expect(result["path"]).to eq("path with spaces")
       end
 
       it "returns nil for non-matching input" do
@@ -66,7 +66,7 @@ RSpec.describe RakeOptions::TemplateEngine do
       let(:parsed_template) { described_class.parse_template("--config $file --env $environment") }
 
       it "extracts multiple values from matching input" do
-        input = ["--config", "database.yml", "--env", "production"]
+        input = ["--config=database.yml", "--env=production"]
         result = described_class.extract_values(input, parsed_template)
         
         expect(result["file"]).to eq("database.yml")
@@ -98,7 +98,7 @@ RSpec.describe RakeOptions::TemplateEngine do
       pattern = described_class.send(:build_pattern, "--with-mysql-lib $path", variables)
       
       expect(pattern).to be_a(Regexp)
-      expect("--with-mysql-lib /usr/local/lib").to match(pattern)
+      expect("--with-mysql-lib=/usr/local/lib").to match(pattern)
     end
 
     it "creates pattern for multiple variables" do
@@ -106,7 +106,7 @@ RSpec.describe RakeOptions::TemplateEngine do
       pattern = described_class.send(:build_pattern, "--config $file --env $env", variables)
       
       expect(pattern).to be_a(Regexp)
-      expect("--config db.yml --env prod").to match(pattern)
+      expect("--config=db.yml --env=prod").to match(pattern)
     end
   end
 end

@@ -45,7 +45,12 @@ end
 
 Run with:
 ```bash
-rake build -- --with-mysql-lib "/usr/local/mysql/lib" --enable-feature "caching"
+rake build -- --with-mysql-lib=/usr/local/mysql/lib --enable-feature=caching
+```
+
+For values with spaces, use quotes:
+```bash
+rake build -- --with-mysql-lib="/path/with spaces/lib"
 ```
 
 ### Bracket-Style Arguments
@@ -79,7 +84,7 @@ config = {
 }
 
 options = RakeOptions.command_line_args(config)
-# Extracts both file and environment from: --config database.yml --env production
+# Extracts both file and environment from: --config=database.yml --env=production
 ```
 
 ### Automatic Help Documentation
@@ -162,8 +167,8 @@ options = RakeOptions.command_line_args(config, notation: :cli)
 ```
 
 Supports:
-- `--flag value`
-- `--flag "value with spaces"`
+- `--flag=value`
+- `--flag="value with spaces"`
 - Multiple flags in one command
 
 ### Bracket Notation
@@ -228,7 +233,7 @@ rake task -- --help
 
 **Solution**: Use quotes around values with spaces:
 ```bash
-rake task -- --path "/path/with spaces"
+rake task -- --path="/path/with spaces"
 ```
 
 ### Template not matching
@@ -240,8 +245,8 @@ rake task -- --path "/path/with spaces"
 # Template
 "option" => "--option $value"
 
-# Command line must match
-rake task -- --option myvalue
+# Command line must match (note the = sign)
+rake task -- --option=myvalue
 ```
 
 ## Requirements

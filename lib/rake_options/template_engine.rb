@@ -57,12 +57,15 @@ module RakeOptions
     # @return [Regexp] Regex pattern for matching
     def self.build_pattern(template, variables)
       # Replace $variables with capture groups that match:
-      # - Quoted strings: "value with spaces"
-      # - Unquoted values: value (non-whitespace)
-      pattern_str = template.gsub(/\$\w+/, '(?:"([^"]+)"|(\S+))')
+      # - Values after = sign: --flag=value
+      # Pattern matches: --flag=value or --flag="value with spaces"
       
-      # Escape special regex characters except our capture groups
-      pattern_str = pattern_str.gsub(/\s+/, '\s+')
+      # First, escape the template
+      pattern_str = Regexp.escape(template)
+      
+      # Then replace escaped $variable patterns with our capture group
+      # The pattern after escaping looks like: \$variable
+      pattern_str = pattern_str.gsub(/\\ \\\$\w+/, '=(?:"([^"]+)"|([^\s]+))')
       
       Regexp.new(pattern_str)
     end

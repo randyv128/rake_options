@@ -13,14 +13,14 @@ RSpec.describe RakeOptions do
   describe ".command_line_args" do
     context "with CLI notation" do
       it "parses CLI-style arguments" do
-        stub_const("ARGV", ["--with-mysql-lib", "/usr/local/lib"])
+        stub_const("ARGV", ["--with-mysql-lib=/usr/local/lib"])
         result = described_class.command_line_args(config, notation: :cli)
         
         expect(result["with-mysql-lib"]).to eq("/usr/local/lib")
       end
 
       it "supports symbol key access" do
-        stub_const("ARGV", ["--with-mysql-lib", "/usr/local/lib"])
+        stub_const("ARGV", ["--with-mysql-lib=/usr/local/lib"])
         result = described_class.command_line_args(config, notation: :cli)
         
         expect(result[:with_mysql_lib]).to eq("/usr/local/lib")
@@ -38,7 +38,7 @@ RSpec.describe RakeOptions do
 
     context "with default notation" do
       it "defaults to CLI notation" do
-        stub_const("ARGV", ["--with-mysql-lib", "/usr/local/lib"])
+        stub_const("ARGV", ["--with-mysql-lib=/usr/local/lib"])
         result = described_class.command_line_args(config)
         
         expect(result["with-mysql-lib"]).to eq("/usr/local/lib")
@@ -57,7 +57,7 @@ RSpec.describe RakeOptions do
 
     context "return value" do
       it "returns HashWithIndifferentAccess" do
-        stub_const("ARGV", ["--with-mysql-lib", "/usr/local/lib"])
+        stub_const("ARGV", ["--with-mysql-lib=/usr/local/lib"])
         result = described_class.command_line_args(config)
         
         expect(result).to be_a(RakeOptions::HashWithIndifferentAccess)

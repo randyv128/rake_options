@@ -13,7 +13,7 @@ RSpec.describe "RakeOptions Integration Tests" do
     end
 
     it "parses multiple CLI arguments in one invocation" do
-      stub_const("ARGV", ["--with-mysql-lib", "/usr/local/lib", "--enable-feature", "caching", "--port", "3000"])
+      stub_const("ARGV", ["--with-mysql-lib=/usr/local/lib", "--enable-feature=caching", "--port=3000"])
       
       result = RakeOptions.command_line_args(config, notation: :cli)
       
@@ -23,7 +23,7 @@ RSpec.describe "RakeOptions Integration Tests" do
     end
 
     it "handles partial arguments gracefully" do
-      stub_const("ARGV", ["--with-mysql-lib", "/usr/local/lib"])
+      stub_const("ARGV", ["--with-mysql-lib=/usr/local/lib"])
       
       result = RakeOptions.command_line_args(config, notation: :cli)
       
@@ -33,7 +33,7 @@ RSpec.describe "RakeOptions Integration Tests" do
     end
 
     it "supports quoted values with spaces" do
-      stub_const("ARGV", ["--with-mysql-lib", '"/path/with spaces/lib"'])
+      stub_const("ARGV", ['--with-mysql-lib="/path/with spaces/lib"'])
       
       result = RakeOptions.command_line_args(config, notation: :cli)
       
@@ -41,7 +41,7 @@ RSpec.describe "RakeOptions Integration Tests" do
     end
 
     it "allows symbol key access" do
-      stub_const("ARGV", ["--with-mysql-lib", "/usr/local/lib"])
+      stub_const("ARGV", ["--with-mysql-lib=/usr/local/lib"])
       
       result = RakeOptions.command_line_args(config, notation: :cli)
       
@@ -141,7 +141,7 @@ RSpec.describe "RakeOptions Integration Tests" do
     end
 
     it "handles templates with multiple variables" do
-      stub_const("ARGV", ["--config", "database.yml", "--env", "production", "--verbose", "debug"])
+      stub_const("ARGV", ["--config=database.yml", "--env=production", "--verbose=debug"])
       
       result = RakeOptions.command_line_args(config, notation: :cli)
       
@@ -161,7 +161,7 @@ RSpec.describe "RakeOptions Integration Tests" do
     end
 
     it "ignores unrecognized arguments" do
-      stub_const("ARGV", ["--unknown-flag", "value", "--verbose", "info"])
+      stub_const("ARGV", ["--unknown-flag=value", "--verbose=info"])
       
       result = RakeOptions.command_line_args(config, notation: :cli)
       
@@ -178,14 +178,14 @@ RSpec.describe "RakeOptions Integration Tests" do
     end
 
     it "raises InvalidNotationError for unsupported notation" do
-      stub_const("ARGV", ["--option", "value"])
+      stub_const("ARGV", ["--option=value"])
       
       expect { RakeOptions.command_line_args(config, notation: :invalid) }
         .to raise_error(RakeOptions::InvalidNotationError, /Invalid notation/)
     end
 
     it "provides clear error message with supported notations" do
-      stub_const("ARGV", ["--option", "value"])
+      stub_const("ARGV", ["--option=value"])
       
       expect { RakeOptions.command_line_args(config, notation: :xml) }
         .to raise_error(RakeOptions::InvalidNotationError, /:cli, :bracket/)
@@ -204,7 +204,7 @@ RSpec.describe "RakeOptions Integration Tests" do
       end
 
       it "handles typical deployment command" do
-        stub_const("ARGV", ["--env", "production", "--region", "us-east-1", "--version", "v1.2.3"])
+        stub_const("ARGV", ["--env=production", "--region=us-east-1", "--version=v1.2.3"])
         
         result = RakeOptions.command_line_args(deploy_config)
         
@@ -226,9 +226,9 @@ RSpec.describe "RakeOptions Integration Tests" do
 
       it "handles build configuration" do
         stub_const("ARGV", [
-          "--with-mysql-lib", "/usr/local/mysql/lib",
-          "--with-ssl-lib", "/usr/local/ssl/lib",
-          "--prefix", "/opt/myapp"
+          "--with-mysql-lib=/usr/local/mysql/lib",
+          "--with-ssl-lib=/usr/local/ssl/lib",
+          "--prefix=/opt/myapp"
         ])
         
         result = RakeOptions.command_line_args(build_config)

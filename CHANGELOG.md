@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Initial release of RakeOptions
-- CLI-style argument parsing with `--flag value` syntax
+- CLI-style argument parsing with `--flag=value` syntax (using = sign to avoid whitespace issues)
 - Bracket-style argument parsing with `[key=value]` syntax
 - Template-based value extraction using `$variable` placeholders
 - Support for multiple variables in single template

@@ -14,7 +14,7 @@ RSpec.describe RakeOptions::CLIParser do
       let(:parser) { described_class.new(config) }
 
       it "parses single flag with value" do
-        argv = ["--with-mysql-lib", "/usr/local/mysql/lib"]
+        argv = ["--with-mysql-lib=/usr/local/mysql/lib"]
         result = parser.parse(argv)
         
         expect(result["with-mysql-lib"]).to eq("/usr/local/mysql/lib")
@@ -38,7 +38,7 @@ RSpec.describe RakeOptions::CLIParser do
       let(:parser) { described_class.new(config) }
 
       it "parses multiple flags in one invocation" do
-        argv = ["--with-mysql-lib", "/usr/local/lib", "--enable-feature", "caching"]
+        argv = ["--with-mysql-lib=/usr/local/lib", "--enable-feature=caching"]
         result = parser.parse(argv)
         
         expect(result["with-mysql-lib"]).to eq("/usr/local/lib")
@@ -46,7 +46,7 @@ RSpec.describe RakeOptions::CLIParser do
       end
 
       it "handles partial arguments" do
-        argv = ["--with-mysql-lib", "/usr/local/lib"]
+        argv = ["--with-mysql-lib=/usr/local/lib"]
         result = parser.parse(argv)
         
         expect(result["with-mysql-lib"]).to eq("/usr/local/lib")
@@ -63,7 +63,7 @@ RSpec.describe RakeOptions::CLIParser do
       let(:parser) { described_class.new(config) }
 
       it "handles quoted values with spaces" do
-        argv = ["--message", '"Hello World"']
+        argv = ['--message="Hello World"']
         result = parser.parse(argv)
         
         expect(result["message"]).to eq("Hello World")
@@ -79,7 +79,7 @@ RSpec.describe RakeOptions::CLIParser do
       let(:parser) { described_class.new(config) }
 
       it "ignores unknown flags without raising errors" do
-        argv = ["--unknown-flag", "value", "--known-flag", "test"]
+        argv = ["--unknown-flag=value", "--known-flag=test"]
         
         expect { parser.parse(argv) }.not_to raise_error
         result = parser.parse(argv)
@@ -96,7 +96,7 @@ RSpec.describe RakeOptions::CLIParser do
       let(:parser) { described_class.new(config) }
 
       it "extracts multiple variables" do
-        argv = ["--config", "database.yml", "--env", "production"]
+        argv = ["--config=database.yml", "--env=production"]
         result = parser.parse(argv)
         
         expect(result["database"]).to be_a(Hash)
