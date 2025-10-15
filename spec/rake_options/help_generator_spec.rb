@@ -6,10 +6,7 @@ require "rake_options/help_generator"
 RSpec.describe RakeOptions::HelpGenerator do
   describe "#display_and_exit" do
     let(:config) do
-      {
-        "with-mysql-lib" => "--with-mysql-lib $path",
-        "enable-feature" => "--enable-feature $name"
-      }
+      [["with-mysql-lib", :string], ["enable-feature", :string]]
     end
 
     context "with custom README" do
@@ -46,10 +43,7 @@ RSpec.describe RakeOptions::HelpGenerator do
 
   describe "#generate_help_text" do
     let(:config) do
-      {
-        "option1" => "--option1 $value",
-        "option2" => "--option2 $value"
-      }
+      [["option1", :string], ["option2", :string]]
     end
 
     context "with custom README" do
@@ -75,12 +69,12 @@ RSpec.describe RakeOptions::HelpGenerator do
   end
 
   describe "#format_option" do
-    let(:generator) { described_class.new({}) }
+    let(:generator) { described_class.new([]) }
 
-    it "formats option with key and template" do
-      formatted = generator.send(:format_option, "my-option", "--my-option $value")
-      expect(formatted).to include("--my-option $value")
-      expect(formatted).to include("my-option")
+    it "formats option with key and type" do
+      formatted = generator.send(:format_option, "my-option", :string)
+      expect(formatted).to include("--my-option")
+      expect(formatted).to include("string")
     end
   end
 end

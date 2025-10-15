@@ -5,11 +5,11 @@ require "spec_helper"
 RSpec.describe "RakeOptions Integration Tests" do
   describe "Full CLI parsing workflow" do
     let(:config) do
-      {
-        "with-mysql-lib" => "--with-mysql-lib $path",
-        "enable-feature" => "--enable-feature $name",
-        "port" => "--port $number"
-      }
+      [
+        ["with-mysql-lib", :string],
+        ["enable-feature", :string],
+        ["port", :integer]
+      ]
     end
 
     it "parses multiple CLI arguments in one invocation" do
@@ -19,7 +19,7 @@ RSpec.describe "RakeOptions Integration Tests" do
       
       expect(result["with-mysql-lib"]).to eq("/usr/local/lib")
       expect(result["enable-feature"]).to eq("caching")
-      expect(result["port"]).to eq("3000")
+      expect(result["port"]).to eq(3000)
     end
 
     it "handles partial arguments gracefully" do
@@ -134,20 +134,18 @@ RSpec.describe "RakeOptions Integration Tests" do
 
   describe "Mixed scenarios" do
     let(:config) do
-      {
-        "database" => "--config $file --env $environment",
-        "verbose" => "--verbose $level"
-      }
+      [
+        ["database", :string],
+        ["verbose", :string]
+      ]
     end
 
-    it "handles templates with multiple variables" do
-      stub_const("ARGV", ["--config=database.yml", "--env=production", "--verbose=debug"])
+    it "handles multiple arguments" do
+      stub_const("ARGV", ["--database=mydb", "--verbose=debug"])
       
       result = RakeOptions.command_line_args(config, notation: :cli)
       
-      expect(result["database"]).to be_a(Hash)
-      expect(result["database"]["file"]).to eq("database.yml")
-      expect(result["database"]["environment"]).to eq("production")
+      expect(result["database"]).to eq("mydb")
       expect(result["verbose"]).to eq("debug")
     end
 
@@ -172,9 +170,7 @@ RSpec.describe "RakeOptions Integration Tests" do
 
   describe "Error scenarios" do
     let(:config) do
-      {
-        "option" => "--option $value"
-      }
+      [["option", :string]]
     end
 
     it "raises InvalidNotationError for unsupported notation" do
@@ -195,16 +191,16 @@ RSpec.describe "RakeOptions Integration Tests" do
   describe "Real-world usage scenarios" do
     context "deployment task" do
       let(:deploy_config) do
-        {
-          "environment" => "--env $environment",
-          "region" => "--region $region",
-          "version" => "--version $ver",
-          "dry-run" => "--dry-run $flag"
-        }
+        [
+          ["environment", :string],
+          ["region", :string],
+          ["version", :string],
+          ["dry-run", :boolean]
+        ]
       end
 
       it "handles typical deployment command" do
-        stub_const("ARGV", ["--env=production", "--region=us-east-1", "--version=v1.2.3"])
+        stub_const("ARGV", ["--environment=production", "--region=us-east-1", "--version=v1.2.3"])
         
         result = RakeOptions.command_line_args(deploy_config)
         
@@ -217,17 +213,17 @@ RSpec.describe "RakeOptions Integration Tests" do
 
     context "build task" do
       let(:build_config) do
-        {
-          "with-mysql" => "--with-mysql-lib $path",
-          "with-ssl" => "--with-ssl-lib $path",
-          "prefix" => "--prefix $path"
-        }
+        [
+          ["with-mysql", :string],
+          ["with-ssl", :string],
+          ["prefix", :string]
+        ]
       end
 
       it "handles build configuration" do
         stub_const("ARGV", [
-          "--with-mysql-lib=/usr/local/mysql/lib",
-          "--with-ssl-lib=/usr/local/ssl/lib",
+          "--with-mysql=/usr/local/mysql/lib",
+          "--with-ssl=/usr/local/ssl/lib",
           "--prefix=/opt/myapp"
         ])
         

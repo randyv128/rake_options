@@ -4,10 +4,7 @@ require "spec_helper"
 
 RSpec.describe RakeOptions do
   let(:config) do
-    {
-      "with-mysql-lib" => "--with-mysql-lib $path",
-      "enable-feature" => "--enable-feature $name"
-    }
+    [["with-mysql-lib", :string], ["enable-feature", :string]]
   end
 
   describe ".command_line_args" do
@@ -66,6 +63,10 @@ RSpec.describe RakeOptions do
   end
 
   describe ".initialize_readme" do
+    let(:simple_config) do
+      [["option", :string]]
+    end
+
     it "stores readme content" do
       readme = "Custom help text"
       described_class.initialize_readme(readme)
@@ -78,7 +79,7 @@ RSpec.describe RakeOptions do
       described_class.initialize_readme(readme)
       stub_const("ARGV", ["--help"])
       
-      expect { described_class.command_line_args(config) }
+      expect { described_class.command_line_args(simple_config) }
         .to output(/My Custom Help/).to_stdout
         .and raise_error(SystemExit)
     end

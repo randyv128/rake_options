@@ -7,9 +7,7 @@ RSpec.describe RakeOptions::CLIParser do
   describe "#parse" do
     context "with single flag" do
       let(:config) do
-        {
-          "with-mysql-lib" => "--with-mysql-lib $path"
-        }
+        [["with-mysql-lib", :string]]
       end
       let(:parser) { described_class.new(config) }
 
@@ -30,10 +28,7 @@ RSpec.describe RakeOptions::CLIParser do
 
     context "with multiple flags" do
       let(:config) do
-        {
-          "with-mysql-lib" => "--with-mysql-lib $path",
-          "enable-feature" => "--enable-feature $name"
-        }
+        [["with-mysql-lib", :string], ["enable-feature", :string]]
       end
       let(:parser) { described_class.new(config) }
 
@@ -56,9 +51,7 @@ RSpec.describe RakeOptions::CLIParser do
 
     context "with quoted values" do
       let(:config) do
-        {
-          "message" => "--message $text"
-        }
+        [["message", :string]]
       end
       let(:parser) { described_class.new(config) }
 
@@ -72,9 +65,7 @@ RSpec.describe RakeOptions::CLIParser do
 
     context "with unknown flags" do
       let(:config) do
-        {
-          "known-flag" => "--known-flag $value"
-        }
+        [["known-flag", :string]]
       end
       let(:parser) { described_class.new(config) }
 
@@ -87,21 +78,34 @@ RSpec.describe RakeOptions::CLIParser do
       end
     end
 
-    context "with multiple variables in template" do
+    context "with type casting" do
       let(:config) do
-        {
-          "database" => "--config $file --env $environment"
-        }
+        [["port", :integer], ["enabled", :boolean], ["ratio", :float]]
       end
       let(:parser) { described_class.new(config) }
 
-      it "extracts multiple variables" do
-        argv = ["--config=database.yml", "--env=production"]
+      it "casts integer values" do
+        argv = ["--port=3000"]
         result = parser.parse(argv)
         
-        expect(result["database"]).to be_a(Hash)
-        expect(result["database"]["file"]).to eq("database.yml")
-        expect(result["database"]["environment"]).to eq("production")
+        expect(result["port"]).to eq(3000)
+        expect(result["port"]).to be_a(Integer)
+      end
+
+      it "casts boolean values" do
+        argv = ["--enabled=true"]
+        result = parser.parse(argv)
+        
+        expect(result["enabled"]).to eq(true)
+        expect(result["enabled"]).to be_a(TrueClass)
+      end
+
+      it "casts float values" do
+        argv = ["--ratio=1.5"]
+        result = parser.parse(argv)
+        
+        expect(result["ratio"]).to eq(1.5)
+        expect(result["ratio"]).to be_a(Float)
       end
     end
   end

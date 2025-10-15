@@ -31,27 +31,57 @@ require 'rake_options'
 
 desc "Build with custom options"
 task :build do
-  config = {
-    "with-mysql-lib" => "--with-mysql-lib $path",
-    "enable-feature" => "--enable-feature $name"
-  }
+  # Simple array configuration: [flag_name, type]
+  config = [
+    ["with-mysql-lib", :string],
+    ["enable-feature", :string],
+    ["port", :integer]
+  ]
   
   options = RakeOptions.command_line_args(config)
   
   puts "MySQL lib path: #{options['with-mysql-lib']}"
   puts "Feature: #{options['enable-feature']}"
+  puts "Port: #{options['port']}"  # Automatically cast to integer
 end
 ```
 
 Run with:
 ```bash
-rake build -- --with-mysql-lib=/usr/local/mysql/lib --enable-feature=caching
+rake build -- --with-mysql-lib=/usr/local/mysql/lib --enable-feature=caching --port=3000
 ```
 
 For values with spaces, use quotes:
 ```bash
 rake build -- --with-mysql-lib="/path/with spaces/lib"
 ```
+
+### Type Casting
+
+RakeOptions automatically casts values to the specified type:
+
+```ruby
+config = [
+  ["port", :integer],
+  ["enabled", :boolean],
+  ["ratio", :float],
+  ["name", :string]
+]
+
+options = RakeOptions.command_line_args(config)
+
+# Values are automatically cast:
+options['port']     # => 3000 (Integer)
+options['enabled']  # => true (Boolean)
+options['ratio']    # => 1.5 (Float)
+options['name']     # => "myapp" (String)
+```
+
+Supported types:
+- `:string` - String values (default)
+- `:integer` or `:int` - Integer values
+- `:float` - Float values
+- `:boolean` or `:bool` - Boolean values (true/false)
 
 ### Bracket-Style Arguments
 
@@ -60,10 +90,10 @@ require 'rake_options'
 
 desc "Deploy with bracket notation"
 task :deploy do
-  config = {
-    "environment" => "[environment=$env]",
-    "region" => "[region=$region]"
-  }
+  config = [
+    ["environment", :string],
+    ["region", :string]
+  ]
   
   options = RakeOptions.command_line_args(config, notation: :bracket)
   
@@ -76,17 +106,6 @@ Run with:
 rake deploy [environment=production] [region=us-west-2]
 ```
 
-### Multiple Variables in One Template
-
-```ruby
-config = {
-  "database" => "--config $file --env $environment"
-}
-
-options = RakeOptions.command_line_args(config)
-# Extracts both file and environment from: --config=database.yml --env=production
-```
-
 ### Automatic Help Documentation
 
 ```ruby
@@ -96,18 +115,20 @@ readme_content = <<~HELP
   Build Task Help
   
   Available options:
-    --with-mysql-lib PATH    Specify MySQL library path
-    --enable-feature NAME    Enable a specific feature
+    --with-mysql-lib=PATH    Specify MySQL library path (string)
+    --enable-feature=NAME    Enable a specific feature (string)
+    --port=NUMBER            Port number (integer)
 HELP
 
 RakeOptions.initialize_readme(readme_content)
 
 desc "Build with help support"
 task :build do
-  config = {
-    "with-mysql-lib" => "--with-mysql-lib $path",
-    "enable-feature" => "--enable-feature $name"
-  }
+  config = [
+    ["with-mysql-lib", :string],
+    ["enable-feature", :string],
+    ["port", :integer]
+  ]
   
   options = RakeOptions.command_line_args(config)
   # Your build logic here
@@ -133,29 +154,32 @@ options[:with_mysql_lib]
 
 ## Configuration Format
 
-The configuration hash maps symbolic names to template patterns:
+The configuration is a simple array of tuples:
 
 ```ruby
-{
-  "key-name" => "template pattern with $variables"
-}
+[
+  ["flag-name", :type],
+  ["another-flag", :type]
+]
 ```
 
-- **Key**: The name you'll use to access the parsed value
-- **Value**: A template string that defines how to extract the argument
-- **Variables**: Prefixed with `$` to indicate where values should be extracted
+- **flag-name**: The CLI flag name (will become `--flag-name`)
+- **type**: The data type (`:string`, `:integer`, `:float`, `:boolean`)
 
-### Template Examples
+### Examples
 
 ```ruby
-# Single variable
-"mysql-path" => "--with-mysql-lib $path"
+# String values
+["mysql-path", :string]
 
-# Multiple variables
-"database" => "--config $file --env $environment"
+# Integer values
+["port", :integer]
 
-# Bracket notation
-"region" => "[region=$value]"
+# Boolean flags
+["enabled", :boolean]
+
+# Float values
+["ratio", :float]
 ```
 
 ## Notation Styles
@@ -236,17 +260,17 @@ rake task -- --help
 rake task -- --path="/path/with spaces"
 ```
 
-### Template not matching
+### Flag name mismatch
 
-**Problem**: Template variables aren't extracting values.
+**Problem**: Arguments aren't being recognized.
 
-**Solution**: Ensure your template matches the command line format exactly:
+**Solution**: Ensure the flag name in ARGV matches the config:
 ```ruby
-# Template
-"option" => "--option $value"
+# Config
+["my-option", :string]
 
-# Command line must match (note the = sign)
-rake task -- --option=myvalue
+# Command line must match exactly
+rake task -- --my-option=myvalue
 ```
 
 ## Requirements
