@@ -121,7 +121,7 @@
     - _Requirements: 1.1, 2.1, 2.3, 3.1, 5.1, 5.2_
 
 - [ ] 10. Create integration tests for end-to-end scenarios
-  - [ ] 10.1 Write integration tests
+  - [x] 10.1 Write integration tests
     - Test full CLI parsing workflow with multiple arguments
     - Test full bracket parsing workflow
     - Test help display with custom README
@@ -130,7 +130,7 @@
     - Test error scenarios and error messages
     - _Requirements: 1.1, 1.2, 1.3, 2.2, 3.2, 5.5_
 
-- [ ] 11. Create gem documentation and examples
+- [x] 11. Create gem documentation and examples
   - Create README.md with installation instructions
   - Add usage examples for CLI notation
   - Add usage examples for bracket notation
@@ -139,7 +139,7 @@
   - Add troubleshooting section
   - _Requirements: 6.1, 6.2, 6.5_
 
-- [ ] 12. Finalize gem packaging
+- [x] 12. Finalize gem packaging
   - Verify gemspec has all required metadata (version, authors, description, homepage)
   - Add LICENSE file (MIT)
   - Ensure all files are included in gemspec files list

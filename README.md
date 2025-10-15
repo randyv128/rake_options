@@ -190,6 +190,60 @@ RakeCommander.command_line_args(config, notation: :invalid)
 options['missing-arg']  # => nil
 ```
 
+## Troubleshooting
+
+### Arguments not being parsed
+
+**Problem**: Your arguments aren't being recognized.
+
+**Solution**: Make sure you're using `--` to separate rake arguments from your custom arguments:
+```bash
+rake task -- --your-flag value
+```
+
+### Symbol vs String keys
+
+**Problem**: Can't access values with symbol keys.
+
+**Solution**: RakeCommander returns a `HashWithIndifferentAccess` that supports both:
+```ruby
+options[:key]        # Works
+options['key']       # Also works
+options[:key_name]   # Converts underscores to dashes automatically
+options['key-name']  # Same value
+```
+
+### Help not displaying
+
+**Problem**: `--help` flag doesn't show help.
+
+**Solution**: Ensure `--help` is in ARGV before calling `command_line_args`:
+```bash
+rake task -- --help
+```
+
+### Quoted values not working
+
+**Problem**: Values with spaces aren't being captured correctly.
+
+**Solution**: Use quotes around values with spaces:
+```bash
+rake task -- --path "/path/with spaces"
+```
+
+### Template not matching
+
+**Problem**: Template variables aren't extracting values.
+
+**Solution**: Ensure your template matches the command line format exactly:
+```ruby
+# Template
+"option" => "--option $value"
+
+# Command line must match
+rake task -- --option myvalue
+```
+
 ## Requirements
 
 - Ruby 2.7 or higher
