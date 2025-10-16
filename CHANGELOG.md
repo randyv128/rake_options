@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2025-10-15
+
+### Removed
+- **BREAKING CHANGE**: Removed bracket notation support
+- Removed `notation:` parameter from `command_line_args` method
+- Deleted ArgumentParser and BracketParser classes
+- Removed all bracket notation tests and documentation
+
+### Changed
+- Simplified API to single format: `RakeOptions.command_line_args(config)`
+- Now only supports CLI format: `--flag=value`
+
+### Benefits
+- No whitespace/quoting issues with bracket notation
+- Simpler, cleaner API
+- Less code to maintain
+- Single clear format for all users
+
+### Migration Guide
+```ruby
+# Old format (0.1.2)
+options = RakeOptions.command_line_args(config, notation: :cli)
+options = RakeOptions.command_line_args(config, notation: :bracket)
+
+# New format (0.1.3)
+options = RakeOptions.command_line_args(config)
+```
+
 ## [0.1.2] - 2025-10-15
 
 ### Changed
@@ -82,6 +110,7 @@ config = [
 - Ruby 2.7 or higher
 - No runtime dependencies (minimal design)
 
+[0.1.3]: https://github.com/randyv128/rake_options/releases/tag/v0.1.3
 [0.1.2]: https://github.com/randyv128/rake_options/releases/tag/v0.1.2
 [0.1.1]: https://github.com/randyv128/rake_options/releases/tag/v0.1.1
 [0.1.0]: https://github.com/randyv128/rake_options/releases/tag/v0.1.0
