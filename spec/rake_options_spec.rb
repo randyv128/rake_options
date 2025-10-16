@@ -8,37 +8,27 @@ RSpec.describe RakeOptions do
   end
 
   describe ".command_line_args" do
-    context "with CLI notation" do
+    context "parsing arguments" do
       it "parses CLI-style arguments" do
         stub_const("ARGV", ["--with-mysql-lib=/usr/local/lib"])
-        result = described_class.command_line_args(config, notation: :cli)
+        result = described_class.command_line_args(config)
         
         expect(result["with-mysql-lib"]).to eq("/usr/local/lib")
       end
 
       it "supports symbol key access" do
         stub_const("ARGV", ["--with-mysql-lib=/usr/local/lib"])
-        result = described_class.command_line_args(config, notation: :cli)
+        result = described_class.command_line_args(config)
         
         expect(result[:with_mysql_lib]).to eq("/usr/local/lib")
       end
-    end
 
-    context "with bracket notation" do
-      it "parses bracket-style arguments" do
-        stub_const("ARGV", ["[with-mysql-lib=/usr/local/lib]"])
-        result = described_class.command_line_args(config, notation: :bracket)
-        
-        expect(result["with-mysql-lib"]).to eq("/usr/local/lib")
-      end
-    end
-
-    context "with default notation" do
-      it "defaults to CLI notation" do
-        stub_const("ARGV", ["--with-mysql-lib=/usr/local/lib"])
+      it "parses multiple arguments" do
+        stub_const("ARGV", ["--with-mysql-lib=/usr/local/lib", "--enable-feature=caching"])
         result = described_class.command_line_args(config)
         
         expect(result["with-mysql-lib"]).to eq("/usr/local/lib")
+        expect(result["enable-feature"]).to eq("caching")
       end
     end
 

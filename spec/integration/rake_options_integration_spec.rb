@@ -15,7 +15,7 @@ RSpec.describe "RakeOptions Integration Tests" do
     it "parses multiple CLI arguments in one invocation" do
       stub_const("ARGV", ["--with-mysql-lib=/usr/local/lib", "--enable-feature=caching", "--port=3000"])
       
-      result = RakeOptions.command_line_args(config, notation: :cli)
+      result = RakeOptions.command_line_args(config)
       
       expect(result["with-mysql-lib"]).to eq("/usr/local/lib")
       expect(result["enable-feature"]).to eq("caching")
@@ -25,7 +25,7 @@ RSpec.describe "RakeOptions Integration Tests" do
     it "handles partial arguments gracefully" do
       stub_const("ARGV", ["--with-mysql-lib=/usr/local/lib"])
       
-      result = RakeOptions.command_line_args(config, notation: :cli)
+      result = RakeOptions.command_line_args(config)
       
       expect(result["with-mysql-lib"]).to eq("/usr/local/lib")
       expect(result["enable-feature"]).to be_nil
@@ -35,7 +35,7 @@ RSpec.describe "RakeOptions Integration Tests" do
     it "supports quoted values with spaces" do
       stub_const("ARGV", ['--with-mysql-lib="/path/with spaces/lib"'])
       
-      result = RakeOptions.command_line_args(config, notation: :cli)
+      result = RakeOptions.command_line_args(config)
       
       expect(result["with-mysql-lib"]).to eq("/path/with spaces/lib")
     end
@@ -43,47 +43,10 @@ RSpec.describe "RakeOptions Integration Tests" do
     it "allows symbol key access" do
       stub_const("ARGV", ["--with-mysql-lib=/usr/local/lib"])
       
-      result = RakeOptions.command_line_args(config, notation: :cli)
+      result = RakeOptions.command_line_args(config)
       
       expect(result[:with_mysql_lib]).to eq("/usr/local/lib")
       expect(result["with-mysql-lib"]).to eq("/usr/local/lib")
-    end
-  end
-
-  describe "Full bracket parsing workflow" do
-    let(:config) do
-      {
-        "environment" => "[environment=$env]",
-        "region" => "[region=$reg]",
-        "instance-type" => "[instance-type=$type]"
-      }
-    end
-
-    it "parses multiple bracket arguments" do
-      stub_const("ARGV", ["[environment=production]", "[region=us-west-2]", "[instance-type=t2.micro]"])
-      
-      result = RakeOptions.command_line_args(config, notation: :bracket)
-      
-      expect(result["environment"]).to eq("production")
-      expect(result["region"]).to eq("us-west-2")
-      expect(result["instance-type"]).to eq("t2.micro")
-    end
-
-    it "handles quoted bracket values" do
-      stub_const("ARGV", ['[environment="staging environment"]'])
-      
-      result = RakeOptions.command_line_args(config, notation: :bracket)
-      
-      expect(result["environment"]).to eq("staging environment")
-    end
-
-    it "supports symbol key access with dashes/underscores" do
-      stub_const("ARGV", ["[instance-type=t2.micro]"])
-      
-      result = RakeOptions.command_line_args(config, notation: :bracket)
-      
-      expect(result[:instance_type]).to eq("t2.micro")
-      expect(result["instance-type"]).to eq("t2.micro")
     end
   end
 
@@ -143,7 +106,7 @@ RSpec.describe "RakeOptions Integration Tests" do
     it "handles multiple arguments" do
       stub_const("ARGV", ["--database=mydb", "--verbose=debug"])
       
-      result = RakeOptions.command_line_args(config, notation: :cli)
+      result = RakeOptions.command_line_args(config)
       
       expect(result["database"]).to eq("mydb")
       expect(result["verbose"]).to eq("debug")
@@ -152,7 +115,7 @@ RSpec.describe "RakeOptions Integration Tests" do
     it "handles empty ARGV" do
       stub_const("ARGV", [])
       
-      result = RakeOptions.command_line_args(config, notation: :cli)
+      result = RakeOptions.command_line_args(config)
       
       expect(result["database"]).to be_nil
       expect(result["verbose"]).to be_nil
@@ -161,32 +124,14 @@ RSpec.describe "RakeOptions Integration Tests" do
     it "ignores unrecognized arguments" do
       stub_const("ARGV", ["--unknown-flag=value", "--verbose=info"])
       
-      result = RakeOptions.command_line_args(config, notation: :cli)
+      result = RakeOptions.command_line_args(config)
       
       expect(result["verbose"]).to eq("info")
       expect(result["database"]).to be_nil
     end
   end
 
-  describe "Error scenarios" do
-    let(:config) do
-      [["option", :string]]
-    end
 
-    it "raises InvalidNotationError for unsupported notation" do
-      stub_const("ARGV", ["--option=value"])
-      
-      expect { RakeOptions.command_line_args(config, notation: :invalid) }
-        .to raise_error(RakeOptions::InvalidNotationError, /Invalid notation/)
-    end
-
-    it "provides clear error message with supported notations" do
-      stub_const("ARGV", ["--option=value"])
-      
-      expect { RakeOptions.command_line_args(config, notation: :xml) }
-        .to raise_error(RakeOptions::InvalidNotationError, /:cli, :bracket/)
-    end
-  end
 
   describe "Real-world usage scenarios" do
     context "deployment task" do

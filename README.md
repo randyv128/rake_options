@@ -83,28 +83,7 @@ Supported types:
 - `:float` - Float values
 - `:boolean` or `:bool` - Boolean values (true/false)
 
-### Bracket-Style Arguments
 
-```ruby
-require 'rake_options'
-
-desc "Deploy with bracket notation"
-task :deploy do
-  config = [
-    ["environment", :string],
-    ["region", :string]
-  ]
-  
-  options = RakeOptions.command_line_args(config, notation: :bracket)
-  
-  puts "Deploying to #{options['environment']} in #{options['region']}"
-end
-```
-
-Run with:
-```bash
-rake deploy [environment=production] [region=us-west-2]
-```
 
 ### Automatic Help Documentation
 
@@ -182,29 +161,18 @@ The configuration is a simple array of tuples:
 ["ratio", :float]
 ```
 
-## Notation Styles
+## Usage Format
 
-### CLI Notation (default)
+RakeOptions uses standard CLI flag format:
 
 ```ruby
-options = RakeOptions.command_line_args(config, notation: :cli)
+options = RakeOptions.command_line_args(config)
 ```
 
 Supports:
 - `--flag=value`
 - `--flag="value with spaces"`
 - Multiple flags in one command
-
-### Bracket Notation
-
-```ruby
-options = RakeOptions.command_line_args(config, notation: :bracket)
-```
-
-Supports:
-- `[key=value]`
-- `[key="value with spaces"]`
-- Multiple bracket arguments
 
 ## Error Handling
 
