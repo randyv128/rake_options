@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email = ["randyv128@gmail.com"]
 
   spec.summary = "Simplify command line argument handling for rake tasks"
-  spec.description = "RakeOptions provides an intuitive API for parsing command line arguments in rake tasks with support for multiple notation styles and automatic help documentation generation."
+  spec.description = "RakeOptions provides an intuitive API for parsing CLI-style arguments in rake tasks with automatic type casting, required/optional validation, and automatic help documentation generation."
   spec.homepage = "https://github.com/randyv128/rake_options"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.7.0"

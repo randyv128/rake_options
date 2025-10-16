@@ -1,6 +1,6 @@
 # RakeOptions
 
-RakeOptions is a Ruby gem that simplifies command line argument handling for rake tasks. It provides an intuitive API for parsing arguments with support for multiple notation styles and automatic help documentation generation.
+RakeOptions is a Ruby gem that simplifies command line argument handling for rake tasks. It provides an intuitive API for parsing CLI-style arguments with automatic type casting, required/optional validation, and automatic help documentation generation.
 
 ## Installation
 
