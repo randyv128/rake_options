@@ -43,7 +43,7 @@ RSpec.describe RakeOptions::HelpGenerator do
 
   describe "#generate_help_text" do
     let(:config) do
-      [["option1", :string], ["option2", :string]]
+      [["option1", :string, :optional], ["option2", :string, :optional]]
     end
 
     context "with custom README" do
@@ -71,10 +71,19 @@ RSpec.describe RakeOptions::HelpGenerator do
   describe "#format_option" do
     let(:generator) { described_class.new([]) }
 
-    it "formats option with key and type" do
-      formatted = generator.send(:format_option, "my-option", :string)
+    it "formats option with all parameters" do
+      formatted = generator.send(:format_option, "my-option", :string, :required, "My option description")
       expect(formatted).to include("--my-option")
       expect(formatted).to include("string")
+      expect(formatted).to include("[REQUIRED]")
+      expect(formatted).to include("My option description")
+    end
+
+    it "formats optional option without description" do
+      formatted = generator.send(:format_option, "my-option", :string, :optional, nil)
+      expect(formatted).to include("--my-option")
+      expect(formatted).to include("string")
+      expect(formatted).not_to include("[REQUIRED]")
     end
   end
 end

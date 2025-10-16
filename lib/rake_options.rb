@@ -28,11 +28,11 @@ module RakeOptions
       HashWithIndifferentAccess.new(result)
     end
 
-    # Initialize help documentation
-    # @param readme_content [String] Help text or README content
+    # Initialize help summary
+    # @param summary [String] Brief summary text for help display
     # @return [void]
-    def initialize_readme(content)
-      self.readme_content = content
+    def initialize_readme_summary(summary)
+      self.readme_content = summary
     end
   end
 end

@@ -31,11 +31,11 @@ require 'rake_options'
 
 desc "Build with custom options"
 task :build do
-  # Simple array configuration: [flag_name, type]
+  # Configuration: [flag_name, type, requirement, description]
   config = [
-    ["with-mysql-lib", :string],
-    ["enable-feature", :string],
-    ["port", :integer]
+    ["with-mysql-lib", :string, :required, "Path to MySQL library"],
+    ["enable-feature", :string, :optional, "Feature to enable"],
+    ["port", :integer, :optional, "Port number"]
   ]
   
   options = RakeOptions.command_line_args(config)
@@ -56,16 +56,18 @@ For values with spaces, use quotes:
 rake build -- --with-mysql-lib="/path/with spaces/lib"
 ```
 
-### Type Casting
+**Note**: Required arguments will raise an error if not provided.
 
-RakeOptions automatically casts values to the specified type:
+### Type Casting and Requirements
+
+RakeOptions automatically casts values to the specified type and validates required arguments:
 
 ```ruby
 config = [
-  ["port", :integer],
-  ["enabled", :boolean],
-  ["ratio", :float],
-  ["name", :string]
+  ["port", :integer, :required, "Server port number"],
+  ["enabled", :boolean, :optional, "Enable feature flag"],
+  ["ratio", :float, :optional, "Scaling ratio"],
+  ["name", :string, :required, "Application name"]
 ]
 
 options = RakeOptions.command_line_args(config)
@@ -77,11 +79,15 @@ options['ratio']    # => 1.5 (Float)
 options['name']     # => "myapp" (String)
 ```
 
-Supported types:
-- `:string` - String values (default)
+**Supported types:**
+- `:string` - String values
 - `:integer` or `:int` - Integer values
 - `:float` - Float values
 - `:boolean` or `:bool` - Boolean values (true/false)
+
+**Requirements:**
+- `:required` - Must be provided or raises ArgumentError
+- `:optional` - Can be omitted (returns nil)
 
 
 
@@ -90,23 +96,19 @@ Supported types:
 ```ruby
 require 'rake_options'
 
-readme_content = <<~HELP
-  Build Task Help
+# Set a brief summary for the help display
+RakeOptions.initialize_readme_summary(<<~SUMMARY)
+  Build Task - Compile and configure the application
   
-  Available options:
-    --with-mysql-lib=PATH    Specify MySQL library path (string)
-    --enable-feature=NAME    Enable a specific feature (string)
-    --port=NUMBER            Port number (integer)
-HELP
-
-RakeOptions.initialize_readme(readme_content)
+  Usage: rake build -- [options]
+SUMMARY
 
 desc "Build with help support"
 task :build do
   config = [
-    ["with-mysql-lib", :string],
-    ["enable-feature", :string],
-    ["port", :integer]
+    ["with-mysql-lib", :string, :required, "Path to MySQL library"],
+    ["enable-feature", :string, :optional, "Feature to enable"],
+    ["port", :integer, :optional, "Port number"]
   ]
   
   options = RakeOptions.command_line_args(config)
@@ -117,6 +119,22 @@ end
 Run with:
 ```bash
 rake build -- --help
+```
+
+Output:
+```
+Build Task - Compile and configure the application
+
+Usage: rake build -- [options]
+
+Available Options:
+
+  --with-mysql-lib=VALUE       (string) [REQUIRED]
+      Path to MySQL library
+  --enable-feature=VALUE       (string)
+      Feature to enable
+  --port=VALUE                 (integer)
+      Port number
 ```
 
 ### Hash Access with Strings or Symbols
@@ -133,32 +151,39 @@ options[:with_mysql_lib]
 
 ## Configuration Format
 
-The configuration is a simple array of tuples:
+The configuration is an array of tuples with 4 elements:
 
 ```ruby
 [
-  ["flag-name", :type],
-  ["another-flag", :type]
+  ["flag-name", :type, :requirement, "description"],
+  ["another-flag", :type, :requirement, "description"]
 ]
 ```
 
 - **flag-name**: The CLI flag name (will become `--flag-name`)
 - **type**: The data type (`:string`, `:integer`, `:float`, `:boolean`)
+- **requirement**: Either `:required` or `:optional`
+- **description**: Help text describing the option
 
 ### Examples
 
 ```ruby
-# String values
-["mysql-path", :string]
+# Required string value
+["mysql-path", :string, :required, "Path to MySQL installation"]
 
-# Integer values
-["port", :integer]
+# Optional integer value
+["port", :integer, :optional, "Server port number"]
 
-# Boolean flags
-["enabled", :boolean]
+# Required boolean flag
+["enabled", :boolean, :required, "Enable the feature"]
 
-# Float values
-["ratio", :float]
+# Optional float value
+["ratio", :float, :optional, "Scaling ratio"]
+```
+
+**Short format** (for backward compatibility):
+```ruby
+["flag-name", :type]  # Defaults to :optional with no description
 ```
 
 ## Usage Format

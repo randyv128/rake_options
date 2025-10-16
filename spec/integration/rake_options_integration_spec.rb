@@ -60,7 +60,7 @@ RSpec.describe "RakeOptions Integration Tests" do
 
     context "with custom README" do
       before do
-        RakeOptions.initialize_readme("Custom Help Documentation\n\nUsage: rake task [options]")
+        RakeOptions.initialize_readme_summary("Custom Help Documentation\n\nUsage: rake task [options]")
       end
 
       it "displays custom README and exits" do

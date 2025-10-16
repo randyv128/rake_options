@@ -7,7 +7,7 @@ RSpec.describe RakeOptions::CLIParser do
   describe "#parse" do
     context "with single flag" do
       let(:config) do
-        [["with-mysql-lib", :string]]
+        [["with-mysql-lib", :string, :optional, "MySQL library path"]]
       end
       let(:parser) { described_class.new(config) }
 
@@ -28,7 +28,7 @@ RSpec.describe RakeOptions::CLIParser do
 
     context "with multiple flags" do
       let(:config) do
-        [["with-mysql-lib", :string], ["enable-feature", :string]]
+        [["with-mysql-lib", :string, :optional], ["enable-feature", :string, :optional]]
       end
       let(:parser) { described_class.new(config) }
 
@@ -51,7 +51,7 @@ RSpec.describe RakeOptions::CLIParser do
 
     context "with quoted values" do
       let(:config) do
-        [["message", :string]]
+        [["message", :string, :optional]]
       end
       let(:parser) { described_class.new(config) }
 
@@ -65,7 +65,7 @@ RSpec.describe RakeOptions::CLIParser do
 
     context "with unknown flags" do
       let(:config) do
-        [["known-flag", :string]]
+        [["known-flag", :string, :optional]]
       end
       let(:parser) { described_class.new(config) }
 
@@ -80,7 +80,7 @@ RSpec.describe RakeOptions::CLIParser do
 
     context "with type casting" do
       let(:config) do
-        [["port", :integer], ["enabled", :boolean], ["ratio", :float]]
+        [["port", :integer, :optional], ["enabled", :boolean, :optional], ["ratio", :float, :optional]]
       end
       let(:parser) { described_class.new(config) }
 
@@ -106,6 +106,35 @@ RSpec.describe RakeOptions::CLIParser do
         
         expect(result["ratio"]).to eq(1.5)
         expect(result["ratio"]).to be_a(Float)
+      end
+    end
+
+    context "with required arguments" do
+      let(:config) do
+        [["name", :string, :required, "User name"], ["age", :integer, :optional, "User age"]]
+      end
+      let(:parser) { described_class.new(config) }
+
+      it "raises error when required argument is missing" do
+        argv = ["--age=25"]
+        
+        expect { parser.parse(argv) }.to raise_error(ArgumentError, /Missing required arguments: name/)
+      end
+
+      it "succeeds when all required arguments are provided" do
+        argv = ["--name=John", "--age=25"]
+        result = parser.parse(argv)
+        
+        expect(result["name"]).to eq("John")
+        expect(result["age"]).to eq(25)
+      end
+
+      it "succeeds when only required arguments are provided" do
+        argv = ["--name=John"]
+        result = parser.parse(argv)
+        
+        expect(result["name"]).to eq("John")
+        expect(result["age"]).to be_nil
       end
     end
   end

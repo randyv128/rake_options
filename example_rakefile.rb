@@ -4,41 +4,41 @@ require 'rake_options'
 
 desc "Build with custom options"
 task :build do
+  RakeOptions.initialize_readme_summary(<<~SUMMARY)
+    Build Task - Compile and configure the application
+    
+    Usage: rake build -- [options]
+  SUMMARY
+
   config = [
-    ["with-mysql-lib", :string],
-    ["enable-feature", :string],
-    ["prefix", :string],
-    ["port", :integer]
+    ["with-mysql-lib", :string, :required, "Path to MySQL library"],
+    ["enable-feature", :string, :optional, "Feature to enable"],
+    ["prefix", :string, :optional, "Installation prefix path"],
+    ["port", :integer, :optional, "Port number"]
   ]
   
   options = RakeOptions.command_line_args(config)
   
   puts "Build Configuration:"
-  puts "  MySQL lib: #{options['with-mysql-lib'] || 'not specified'}"
+  puts "  MySQL lib: #{options['with-mysql-lib']}"
   puts "  Feature: #{options['enable-feature'] || 'not specified'}"
-  puts "  Prefix: #{options['prefix'] || 'not specified'}"
-  puts "  Port: #{options['port'] || 'not specified'}"
+  puts "  Prefix: #{options['prefix'] || '/usr/local'}"
+  puts "  Port: #{options['port'] || 3000}"
 end
 
 desc "Deploy with environment settings"
 task :deploy do
+  RakeOptions.initialize_readme_summary(<<~SUMMARY)
+    Deploy Task - Deploy application to specified environment
+    
+    Usage: rake deploy -- [options]
+  SUMMARY
+
   config = [
-    ["environment", :string],
-    ["region", :string],
-    ["dry-run", :boolean]
+    ["environment", :string, :required, "Target environment (production, staging, development)"],
+    ["region", :string, :required, "AWS region (us-east-1, us-west-2, etc.)"],
+    ["dry-run", :boolean, :optional, "Dry run mode - don't actually deploy"]
   ]
-  
-  # Initialize help documentation
-  RakeOptions.initialize_readme(<<~HELP)
-    Deploy Task
-    
-    Usage: rake deploy -- --environment=ENV --region=REGION [--dry-run=BOOL]
-    
-    Options:
-      --environment=ENV    Target environment (production, staging, development)
-      --region=REGION      AWS region (us-east-1, us-west-2, etc.)
-      --dry-run=BOOL       Dry run mode (true/false)
-  HELP
   
   options = RakeOptions.command_line_args(config)
   
@@ -47,8 +47,9 @@ task :deploy do
 end
 
 # Example usage:
+# rake build -- --help
 # rake build -- --with-mysql-lib=/usr/local/mysql/lib --enable-feature=caching --port=3000
-# rake build -- --prefix="/opt/my app"
+# rake build -- --with-mysql-lib=/usr/local/mysql/lib --prefix="/opt/my app"
+# rake deploy -- --help
 # rake deploy -- --environment=production --region=us-east-1
 # rake deploy -- --environment=staging --region=us-west-2 --dry-run=true
-# rake deploy -- --help
